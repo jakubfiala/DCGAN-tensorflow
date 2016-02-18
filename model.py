@@ -105,7 +105,7 @@ class DCGAN(object):
 
     def train(self, config):
         """Train DCGAN"""
-        data = glob(os.path.join("./data", config.dataset, "*.jpg"))
+        data = glob(os.path.join("../../../Data", config.dataset, "*.png"))
         #np.random.shuffle(data)
 
         d_optim = tf.train.AdamOptimizer(config.learning_rate, beta1=config.beta1) \
@@ -134,7 +134,7 @@ class DCGAN(object):
             print(" [!] Load failed...")
 
         for epoch in xrange(config.epoch):
-            data = glob(os.path.join("./data", config.dataset, "*.jpg"))
+            data = glob(os.path.join("../../../Data", config.dataset, "*.png"))
             batch_idxs = min(len(data), config.train_size)/config.batch_size
 
             for idx in xrange(0, batch_idxs):
