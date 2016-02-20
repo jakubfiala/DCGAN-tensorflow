@@ -159,6 +159,11 @@ class DCGAN(object):
                     feed_dict={ self.z: batch_z })
                 self.writer.add_summary(summary_str, counter)
 
+                # Run g_optim thrice to make sure that d_loss does not go to zero (different from paper)
+                _, summary_str = self.sess.run([g_optim, self.g_sum],
+                    feed_dict={ self.z: batch_z })
+                self.writer.add_summary(summary_str, counter)
+
                 errD_fake = self.d_loss_fake.eval({self.z: batch_z})
                 errD_real = self.d_loss_real.eval({self.images: batch_images})
                 errG = self.g_loss.eval({self.z: batch_z})
@@ -168,12 +173,12 @@ class DCGAN(object):
                     % (epoch, idx, batch_idxs,
                         time.time() - start_time, errD_fake+errD_real, errG))
 
-                #if np.mod(counter, 1) == 1:
+                #if np.mod(counter, 25) == 1:
                 samples, d_loss, g_loss = self.sess.run(
                     [self.sampler, self.d_loss, self.g_loss],
                     feed_dict={self.z: sample_z, self.images: sample_images}
                 )
-                save_images(samples, [8, 12],
+                save_images(samples, [8, 8],
                             './samples/train_%s_%s.png' % (epoch, idx))
                 print("[Sample] d_loss: %.8f, g_loss: %.8f" % (d_loss, g_loss))
 
